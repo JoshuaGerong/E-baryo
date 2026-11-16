@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E-BARYO | Next-Generation Barangay Information Management</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #111827;
+      color: #f3f4f6;
+    }
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+    }
+    .sidebar-item.active {
+      background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #111827; }
+    ::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
+  </style>
+</head>
+<body class="h-screen overflow-hidden select-none">
+
+  <!-- ==================== 1. AUTHENTICATION SCREENS (Desktop 1, 5, 22, 23, 24) ==================== -->
+  <div id="auth-wrapper" class="flex h-screen w-screen">
+    <!-- Left Branding Panel -->
+    <div class="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-[#2b58b8] via-[#3465cb] to-[#1e3a8a] items-center justify-center overflow-hidden p-12">
+      <!-- Decorative background circles matching Figma -->
+      <div class="absolute -top-16 -left-16 w-64 h-64 rounded-full bg-[#0ea5e9] opacity-80"></div>
+      <div class="absolute w-[440px] h-[440px] rounded-full bg-[#1e293b]/45"></div>
+
+      <!-- Center Glass Feature Card -->
+      <div class="glass-panel relative z-10 max-w-md w-full rounded-2xl p-8 text-white shadow-2xl">
+        <div class="flex flex-col items-center text-center mb-6">
+          <div class="w-14 h-14 rounded-xl bg-white/15 flex items-center justify-center mb-3 border border-white/25">
+            <i class="fa-solid fa-link text-2xl text-white"></i>
+          </div>
+          <h1 class="text-2xl font-bold tracking-wider">E-BARYO</h1>
+          <p class="text-xs text-blue-100 mt-1">Next-Generation Barangay Information Management</p>
+        </div>
+
+        <div class="space-y-4">
+          <div class="flex items-start gap-3.5 bg-white/10 p-3.5 rounded-xl">
+            <div class="w-9 h-9 rounded-lg bg-blue-500/40 flex items-center justify-center shrink-0 mt-0.5">
+              <i class="fa-solid fa-shield-halved text-blue-200"></i>
+            </div>
+            <div>
+              <h3 class="text-sm font-semibold">Secure Resident Profiles</h3>
+              <p class="text-xs text-blue-100/80">Encrypted data storage & instant retrieval</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3.5 bg-white/10 p-3.5 rounded-xl">
+            <div class="w-9 h-9 rounded-lg bg-emerald-500/40 flex items-center justify-center shrink-0 mt-0.5">
+              <i class="fa-solid fa-file-circle-check text-emerald-200"></i>
+            </div>
+            <div>
+              <h3 class="text-sm font-semibold">Automated Clearance</h3>
+              <p class="text-xs text-blue-100/80">Generate certificates & permits instantly</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3.5 bg-white/10 p-3.5 rounded-xl">
+            <div class="w-9 h-9 rounded-lg bg-amber-500/40 flex items-center justify-center shrink-0 mt-0.5">
+              <i class="fa-solid fa-bullhorn text-amber-200"></i>
+            </div>
+            <div>
+              <h3 class="text-sm font-semibold">Community Hub</h3>
+              <p class="text-xs text-blue-100/80">Broadcast announcements to the barangay</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Auth Card Panel -->
+    <div class="w-full lg:w-1/2 bg-[#141a29] flex items-center justify-center p-6">
+      <div class="w-full max-w-md bg-[#23293a] border border-gray-700/60 rounded-2xl p-8 shadow-2xl">
+        
+        <!-- VIEW: LOGIN (Desktop - 1) -->
+        <div id="auth-login" class="space-y-5">
+          <div class="flex items-center justify-center gap-2.5 mb-2">
+            <i class="fa-solid fa-link text-blue-400 text-xl"></i>
+            <h2 class="text-xl font-bold text-white">Log in to E-Baryo</h2>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-400 mb-1.5">Username</label>
+            <input id="login-user" type="text" value="admin_lapasan" placeholder="Enter username"
+              class="w-full bg-[#374151]/70 border border-gray-600 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-400 mb-1.5">Password</label>
+            <input id="login-pass" type="password" value="030407" placeholder="Enter password"
+              class="w-full bg-[#374151]/70 border border-gray-600 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500" />
+          </div>
+
+          <div class="flex justify-end">
+            <button onclick="switchAuthView('auth-forgot')" class="text-xs text-blue-400 hover:underline">Forgot Password?</button>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 pt-2">
+            <button onclick="enterApp()" class="bg-[#0ea5e9] hover:bg-[#0284c7] text-white font-semibold py-2.5 rounded-lg text-sm transition shadow-lg shadow-sky-500/20">
+              Login
+            </button>
+            <button onclick="switchAuthView('auth-signup')" class="bg-[#374151] hover:bg-[#4b5563] text-gray-200 font-semibold py-2.5 rounded-lg text-sm transition">
+              Sign Up
+            </button>
+          </div>
+        </div>
+
+        <!-- VIEW: SIGN UP (Desktop - 5) -->
+        <div id="auth-signup" class="hidden space-y-4">
+          <button onclick="switchAuthView('auth-login')" class="text-gray-400 hover:text-white text-sm flex items-center gap-1.5">
+            <i class="fa-solid fa-arrow-left"></i> Back
+          </button>
+          <h2 class="text-xl font-bold text-white text-center">Create Staff Account</h2>
+          <input type="text" placeholder="Enter username" class="w-full bg-[#374151]/70 border border-gray-600 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500" />
+          <input type="password" placeholder="Enter password" class="w-full bg-[#374151]/70 border border-gray-600 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500" />
+          <input type="password" placeholder="Confirm password" class="w-full bg-[#374151]/70 border border-gray-600 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500" />
+          <button onclick="switchAuthView('auth-saved')" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2.5 rounded-lg text-sm transition mt-2">
+            Confirm Account
+          </button>
+        </div>
+
+        <!-- VIEW: FORGOT PASSWORD (Desktop - 22) -->
+        <div id="auth-forgot" class="hidden space-y-4 text-center">
+          <h2 class="text-xl font-bold text-white">Reset Password</h2>
+          <p class="text-xs text-gray-400">Enter your resident or staff email and we will send you instructions to reset your password.</p>
+          <div class="text-left">
+            <label class="block text-xs text-gray-400 mb-1">Email Address</label>
+            <input type="email" placeholder="e.g. joshua@gmail.com" class="w-full bg-[#374151]/70 border border-gray-600 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500" />
+          </div>
+          <button onclick="switchAuthView('auth-email-sent')" class="w-full bg-[#374151] hover:bg-blue-600 text-white font-semibold py-2.5 rounded-lg text-sm transition">
+            Send Reset Instructions
+          </button>
+          <button onclick="switchAuthView('auth-login')" class="text-xs text-gray-400 hover:text-white">Return to Login</button>
+        </div>
+
+        <!-- VIEW: CHECK YOUR EMAIL (Desktop - 23) -->
+        <div id="auth-email-sent" class="hidden space-y-5 text-center py-4">
+          <div class="w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center mx-auto text-xl">
+            <i class="fa-solid fa-envelope-circle-check"></i>
+          </div>
+          <h2 class="text-xl font-bold text-white">Check your Email</h2>
+          <p class="text-xs text-gray-400 leading-relaxed">We have sent password recovery instructions to your registered email address.</p>
+          <button onclick="switchAuthView('auth-login')" class="w-full bg-[#111827] hover:bg-gray-800 text-white font-semibold py-2.5 rounded-lg text-sm border border-gray-700">
+            Back to Log In
+          </button>
+        </div>
+
+        <!-- VIEW: ACCOUNT SAVED (Desktop - 24) -->
+        <div id="auth-saved" class="hidden space-y-5 text-center py-4">
+          <div class="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto text-2xl">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <h2 class="text-xl font-bold text-white">Account Saved!</h2>
+          <p class="text-xs text-gray-400">Your credentials have been registered. You can now proceed to log in.</p>
+          <button onclick="switchAuthView('auth-login')" class="w-full bg-[#111827] hover:bg-gray-800 text-white font-semibold py-2.5 rounded-lg text-sm border border-gray-700">
+            Back to Log In
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 2. MAIN APPLICATION SHELL ==================== -->
+  <div id="app-wrapper" class="hidden flex h-screen w-screen bg-[#121826]">
+    
+    <!-- LEFT SIDEBAR -->
+    <aside class="w-64 bg-[#192132] border-r border-gray-800 flex flex-col justify-between p-4 shrink-0">
+      <div>
+        <!-- Brand Header -->
+        <div class="flex items-center gap-3 px-2 py-3 mb-6 border-b border-gray-800">
+          <div class="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold">
+            <i class="fa-solid fa-link"></i>
+          </div>
+          <div>
+            <h1 class="text-base font-bold tracking-wide text-white leading-none">E-BARYO</h1>
+            <span class="text-[10px] text-gray-400">Barangay Lapasan Portal</span>
+          </div>
+        </div>
+
+        <!-- MAIN MENU -->
+        <p class="text-[10px] font-semibold uppercase tracking-wider text-gray-500 px-3 mb-2">Main Menu</p>
+        <nav class="space-y-1 mb-6">
+          <button onclick="navigate('dashboard')" id="nav-dashboard" class="sidebar-item active w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-800 transition">
+            <i class="fa-solid fa-chart-pie w-4"></i> Dashboard Overview
+          </button>
+          <button onclick="navigate('residents')" id="nav-residents" class="sidebar-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-800 transition">
+            <i class="fa-solid fa-users w-4"></i> Resident Database
+          </button>
+          <button onclick="navigate('clearances')" id="nav-clearances" class="sidebar-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-800 transition">
+            <i class="fa-solid fa-file-signature w-4"></i> Clearance Requests
+          </button>
+        </nav>
+
+        <!-- SYSTEM -->
+        <p class="text-[10px] font-semibold uppercase tracking-wider text-gray-500 px-3 mb-2">System</p>
+        <nav class="space-y-1">
+          <button onclick="navigate('logs')" id="nav-logs" class="sidebar-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-800 transition">
+            <i class="fa-solid fa-clock-rotate-left w-4"></i> Transaction Logs
+          </button>
+          <button onclick="navigate('settings')" id="nav-settings" class="sidebar-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-800 transition">
+            <i class="fa-solid fa-gear w-4"></i> System Settings
+          </button>
+        </nav>
+      </div>
+
+      <!-- LOG OUT -->
+      <button onclick="logout()" class="w-full flex items-center justify-center gap-2 bg-red-600/90 hover:bg-red-600 text-white font-semibold py-2.5 rounded-lg text-sm transition shadow-lg shadow-red-900/20">
+        <i class="fa-solid fa-right-from-bracket"></i> Log Out
+      </button>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 overflow-y-auto p-8">
+      
+      <!-- ==================== VIEW: DASHBOARD OVERVIEW (Desktop - 3) ==================== -->
+      <section id="view-dashboard" class="space-y-6">
+        <div>
+          <h2 class="text-2xl font-bold text-white">Dashboard Overview</h2>
+          <p class="text-xs text-gray-400">Real-time barangay population statistics and document issuance analytics</p>
+        </div>
+
+        <!-- KPI Stat Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-[#1e2638] border border-gray-800 rounded-xl p-5 flex items-center justify-between">
+            <div>
+              <p class="text-xs text-gray-400 font-medium">Total Population</p>
+              <h3 id="stat-pop" class="text-3xl font-bold text-sky-400 mt-1">4,521</h3>
+              <span class="text-[11px] text-emerald-400">+12 registered this week</span>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-sky-500/15 text-sky-400 flex items-center justify-center text-xl">
+              <i class="fa-solid fa-people-group"></i>
+            </div>
+          </div>
+
+          <div class="bg-[#1e2638] border border-gray-800 rounded-xl p-5 flex items-center justify-between">
+            <div>
+              <p class="text-xs text-gray-400 font-medium">Pending Document Requests</p>
+              <h3 class="text-3xl font-bold text-amber-400 mt-1">18</h3>
+              <span class="text-[11px] text-gray-400">Requires secretary verification</span>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center text-xl">
+              <i class="fa-solid fa-hourglass-half"></i>
+            </div>
+          </div>
+
+          <div class="bg-[#1e2638] border border-gray-800 rounded-xl p-5 flex items-center justify-between">
+            <div>
+              <p class="text-xs text-gray-400 font-medium">Documents Issued Today</p>
+              <h3 class="text-3xl font-bold text-emerald-400 mt-1">42</h3>
+              <span class="text-[11px] text-emerald-400">Clearances, Residency & Indigency</span>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center text-xl">
+              <i class="fa-solid fa-file-circle-check"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-[#1e2638] border border-gray-800 rounded-xl p-6">
+            <h4 class="text-sm font-semibold text-white mb-4">Population by Zone / Purok</h4>
+            <div class="h-60 flex items-center justify-center">
+              <canvas id="zoneChart"></canvas>
+            </div>
+          </div>
+
+          <div class="bg-[#1e2638] border border-gray-800 rounded-xl p-6">
+            <h4 class="text-sm font-semibold text-white mb-4">Clearance Requests (Last 7 Days)</h4>
+            <div class="h-60">
+              <canvas id="requestChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Bottom Action Table + Shortcuts -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2 bg-[#1e2638] border border-gray-800 rounded-xl overflow-hidden">
+            <div class="px-5 py-3.5 border-b border-gray-800 flex justify-between items-center">
+              <h4 class="text-sm font-semibold text-white">Recent Clearance Queue</h4>
+              <button onclick="navigate('clearances')" class="text-xs text-blue-400 hover:underline">View All</button>
+            </div>
+            <table class="w-full text-left text-xs">
+              <thead class="bg-gray-900/60 text-gray-400 uppercase">
+                <tr>
+                  <th class="px-5 py-3">Resident Name</th>
+                  <th class="px-5 py-3">Document Type</th>
+                  <th class="px-5 py-3">Date Requested</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-800 text-gray-200">
+                <tr><td class="px-5 py-3 font-medium">Judah Ray Galindo</td><td class="px-5 py-3">Barangay Clearance</td><td class="px-5 py-3 text-gray-400">Nov 16, 2026 • 8:30 AM</td></tr>
+                <tr><td class="px-5 py-3 font-medium">Joshua Gabriel Gerong</td><td class="px-5 py-3">Certificate of Residency</td><td class="px-5 py-3 text-gray-400">Nov 16, 2026 • 9:15 AM</td></tr>
+                <tr><td class="px-5 py-3 font-medium">Athea Salinas</td><td class="px-5 py-3">Barangay Indigency</td><td class="px-5 py-3 text-gray-400">Nov 16, 2026 • 10:05 AM</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="bg-[#1e2638] border border-gray-800 rounded-xl p-5 flex flex-col justify-between">
+            <h4 class="text-sm font-semibold text-white mb-3">Quick Actions</h4>
+            <div class="space-y-2.5">
+              <button onclick="navigate('residents'); toggleAddResidentForm(true)" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 transition">
+                <i class="fa-solid fa-user-plus"></i> Add New Resident
+              </button>
+              <button onclick="navigate('clearances')" class="w-full bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 transition">
+                <i class="fa-solid fa-print"></i> Issue Clearance
+              </button>
+              <button onclick="navigate('logs')" class="w-full bg-gray-700 hover:bg-gray-600 text-white text-xs font-semibold py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 transition">
+                <i class="fa-solid fa-list-check"></i> View Audit Logs
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW: RESIDENT DATABASE (Desktop 2, 4, 9, 10) ==================== -->
+      <section id="view-residents" class="hidden space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-bold text-white">Resident Database</h2>
+            <p class="text-xs text-gray-400">Manage barangay population, add new records, and update existing profiles</p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2.5">
+            <div class="relative">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400 text-xs"></i>
+              <input id="resident-search" onkeyup="renderResidents()" type="text" placeholder="Search residents..."
+                class="bg-[#1e2638] border border-gray-700 rounded-lg pl-8 pr-4 py-2 text-xs text-white focus:outline-none focus:border-blue-500" />
+            </div>
+            <button onclick="toggleAddResidentForm(true)" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-3.5 py-2 rounded-lg flex items-center gap-1.5 transition">
+              <i class="fa-solid fa-plus"></i> Add Resident
+            </button>
+          </div>
+        </div>
+
+        <!-- SUB-VIEW A: RESIDENT TABLE (Desktop - 2) -->
+        <div id="resident-table-container" class="bg-[#1e2638] border border-gray-800 rounded-xl overflow-hidden shadow-xl">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-gray-900/80 text-gray-300 uppercase tracking-wider border-b border-gray-800">
+              <tr>
+                <th class="px-5 py-3.5">Name</th>
+                <th class="px-5 py-3.5">Age</th>
+                <th class="px-5 py-3.5">Gender</th>
+                <th class="px-5 py-3.5">Zone</th>
+                <th class="px-5 py-3.5">Civil Status</th>
+                <th class="px-5 py-3.5 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="resident-tbody" class="divide-y divide-gray-800 text-gray-200">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- SUB-VIEW B: ADD NEW RESIDENT FULL FORM (Desktop - 4) -->
+        <div id="resident-add-form" class="hidden bg-[#1e2638] border border-gray-800 rounded-xl p-6 space-y-6">
+          <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+            <h3 class="text-sm font-bold text-white">Please fill out official details below</h3>
+            <button onclick="toggleAddResidentForm(false)" class="text-xs text-gray-400 hover:text-white">✕ Close Form</button>
+          </div>
+
+          <!-- 1. Personal Information -->
+          <div>
+            <h4 class="text-xs font-semibold text-blue-400 uppercase mb-3">1. Personal Information</h4>
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+              <div class="border border-dashed border-gray-600 rounded-lg p-3 flex flex-col items-center justify-center text-gray-400 text-xs">
+                <i class="fa-solid fa-camera text-lg mb-1"></i>
+                <span>Upload Photo</span>
+              </div>
+              <input id="new-fname" type="text" placeholder="First Name *" class="bg-[#111827] border border-gray-700 rounded-lg px-3 py-2 text-xs text-white" />
+              <input id="new-mname" type="text" placeholder="Middle Name" class="bg-[#111827] border border-gray-700 rounded-lg px-3 py-2 text-xs text-white" />
+              <input id="new-lname" type="text" placeholder="Last Name *" class="bg-[#111827] border border-gray-700 rounded-lg px-3 py-2 text-xs text-white" />
+              <input id="new-suffix" type="text" placeholder="Suffix (Jr., Sr.)" class="bg-[#111827] border border-gray-700 rounded-lg px-3 py-2 text-xs text-white" />
+            </div>
+          </div>
+
+          <!-- 2. Demographics -->
+          <div>
+            <h4 class="text-xs font-semibold text-blue-400 uppercase mb-3">2. Demographics</h4>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+              <input type="date" class="bg-[#111827] border border-gray-700 rounded-lg px-3 py-2 text-xs text-gray-300" />
+              <input id="new-age" type="number" placeholder="Age *" class="bg-[#111827] border border-gray-700 rounded-lg px-3 py-2 text-xs text-white" />
+              <select id="new-gender" class="bg-[#111827] border border-gray-700 rounded-lg px-3 py-2 text-xs text-white">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+              <select id="new-status" class="bg-[#111827] border border-gray-700 rounded-lg px-3 py-2 text-xs text-white">
+                <option value="Single">Single</option>
+                <option value="Married">Married</option>
+                <option value="Separated">Separated</option>
+                <option value="Widowed">Widowed</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 3. Address & Contact -->
+          <div>
+            <h4 class="text-xs font-semibold text-blue-400 uppercase mb-3">3. Address & Contact</h4>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+              <select id="new-zone" class="bg-[#111827] border border-gray-700 rounded-lg px-3 py-2 text-xs text-white">
+                <option value="Zone 1, Lapasan">Zone 1, Lapasan</option>
+                <option value="Zone 2, Lapasan">Zone 2, Lapasan</option>
+                <option value="Zone 3, Lapasan">Zone 3, Lapasan</option>
+                <option value="Zone 4, Lapasan">Zone 4, Lapasan</option>
+              </select>
+              <input type="text" placeholder="Household Number" class="bg-[#111827] border border-gray-700 rounded-lg px-3 py-2 text-xs text-white" />
+              <input type="text" placeholder="Street Name" class="bg-[#111827] border border-gray-700 rounded-lg px-3 py-2 text-xs text-white" />
+              <input type="text" placeholder="Contact Number (09...)" class="bg-[#111827] border border-gray-700 rounded-lg px-3 py-2 text-xs text-white" />
+            </div>
+          </div>
+
+          <!-- 4 & 5. Registration & Emergency Contact -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h4 class="text-xs font-semibold text-blue-400 uppercase mb-3">4. Registration Details</h4>
+              <div class="grid grid-cols-3 gap-2">
+                <select class="bg-[#111827] border border-gray-700 rounded-lg px-2 py-2 text-xs text-white">
+                  <option>Registered Voter: Yes</option>
+                  <option>Registered Voter: No</option>
+                </select>
+                <input type="text" placeholder="Occupation" class="bg-[#111827] border border-gray-700 rounded-lg px-2 py-2 text-xs text-white" />
+                <input type="text" placeholder="PhilHealth / ID" class="bg-[#111827] border border-gray-700 rounded-lg px-2 py-2 text-xs text-white" />
+              </div>
+            </div>
+            <div>
+              <h4 class="text-xs font-semibold text-blue-400 uppercase mb-3">5. Emergency Contact</h4>
+              <div class="grid grid-cols-3 gap-2">
+                <input type="text" placeholder="Contact Name" class="bg-[#111827] border border-gray-700 rounded-lg px-2 py-2 text-xs text-white" />
+                <input type="text" placeholder="Relationship" class="bg-[#111827] border border-gray-700 rounded-lg px-2 py-2 text-xs text-white" />
+                <input type="text" placeholder="Contact Number" class="bg-[#111827] border border-gray-700 rounded-lg px-2 py-2 text-xs text-white" />
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-3 pt-4 border-t border-gray-800">
+            <button onclick="toggleAddResidentForm(false)" class="bg-gray-700 hover:bg-gray-600 text-white text-xs font-semibold px-5 py-2.5 rounded-lg">Cancel</button>
+            <button onclick="saveNewResident()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-6 py-2.5 rounded-lg">Save Resident</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW: CLEARANCE REQUESTS (Desktop - 6) ==================== -->
+      <section id="view-clearances" class="hidden space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-bold text-white">Clearance Requests</h2>
+            <p class="text-xs text-gray-400">Review, approve, and print requested barangay certifications</p>
+          </div>
+          <input type="text" placeholder="Search request..." class="bg-[#1e2638] border border-gray-700 rounded-lg px-4 py-2 text-xs text-white focus:outline-none focus:border-blue-500" />
+        </div>
+
+        <div class="bg-[#1e2638] border border-gray-800 rounded-xl overflow-hidden shadow-xl">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-gray-900/80 text-gray-300 uppercase border-b border-gray-800">
+              <tr>
+                <th class="px-5 py-3.5">Name</th>
+                <th class="px-5 py-3.5">Document Type</th>
+                <th class="px-5 py-3.5">Zone</th>
+                <th class="px-5 py-3.5">Time & Date</th>
+                <th class="px-5 py-3.5 text-right">Status / Action</th>
+              </tr>
+            </thead>
+            <tbody id="clearance-tbody" class="divide-y divide-gray-800 text-gray-200">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW: TRANSACTION LOGS (Desktop - 7) ==================== -->
+      <section id="view-logs" class="hidden space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-bold text-white">Transaction Logs</h2>
+            <p class="text-xs text-gray-400">Immutable system audit trail of staff activities and document issuances</p>
+          </div>
+          <input type="text" placeholder="Search logs..." class="bg-[#1e2638] border border-gray-700 rounded-lg px-4 py-2 text-xs text-white" />
+        </div>
+
+        <div class="bg-[#1e2638] border border-gray-800 rounded-xl overflow-hidden shadow-xl">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-gray-900/80 text-gray-300 uppercase border-b border-gray-800">
+              <tr>
+                <th class="px-4 py-3.5">Log ID</th>
+                <th class="px-4 py-3.5">Date & Time</th>
+                <th class="px-4 py-3.5">Staff User</th>
+                <th class="px-4 py-3.5">Action Type</th>
+                <th class="px-4 py-3.5">Resident Affected</th>
+                <th class="px-4 py-3.5">Description</th>
+                <th class="px-4 py-3.5">Transaction ID</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-800 text-gray-200">
+              <tr><td class="px-4 py-3 font-mono text-blue-400">12345</td><td class="px-4 py-3">11-16-2026 / 8:30 AM</td><td class="px-4 py-3">Joshua</td><td class="px-4 py-3">Issued Clearance</td><td class="px-4 py-3">Maria Dela Cruz (Zone 2)</td><td class="px-4 py-3 text-gray-400">Issued Barangay Clearance for Employment</td><td class="px-4 py-3 font-mono">TX01</td></tr>
+              <tr><td class="px-4 py-3 font-mono text-blue-400">12346</td><td class="px-4 py-3">11-16-2026 / 9:15 AM</td><td class="px-4 py-3">Joshua</td><td class="px-4 py-3">Profile Updated</td><td class="px-4 py-3">Juan Dela Cruz (Zone 1)</td><td class="px-4 py-3 text-gray-400">Updated contact number and civil status</td><td class="px-4 py-3 font-mono">TX02</td></tr>
+              <tr><td class="px-4 py-3 font-mono text-blue-400">12349</td><td class="px-4 py-3">11-15-2026 / 2:45 PM</td><td class="px-4 py-3">Judah</td><td class="px-4 py-3">Record Added</td><td class="px-4 py-3">Athea Salinas (Zone 4)</td><td class="px-4 py-3 text-gray-400">Registered new resident profile</td><td class="px-4 py-3 font-mono">TX03</td></tr>
+              <tr><td class="px-4 py-3 font-mono text-blue-400">12352</td><td class="px-4 py-3">11-15-2026 / 4:10 PM</td><td class="px-4 py-3">Joshua</td><td class="px-4 py-3">Issued Residency</td><td class="px-4 py-3">Pedro Penduko (Zone 3)</td><td class="px-4 py-3 text-gray-400">Generated Certificate of Residency</td><td class="px-4 py-3 font-mono">TX04</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW: SYSTEM SETTINGS (Desktop 8, 11, 12, 13, 14) ==================== -->
+      <section id="view-settings" class="hidden space-y-6">
+        <div>
+          <h2 class="text-2xl font-bold text-white">System Settings</h2>
+          <p class="text-xs text-gray-400">Configure barangay metadata, multi-factor authentication, API keys, and local backups</p>
+        </div>
+
+        <!-- MAIN SETTINGS PANEL -->
+        <div id="settings-main" class="bg-[#1e2638] border border-gray-800 rounded-xl p-6 max-w-2xl space-y-5">
+          <div class="flex items-center justify-between py-2 border-b border-gray-800">
+            <span class="text-sm text-gray-300 font-medium">Barangay</span>
+            <span class="bg-gray-700/80 text-white text-xs px-4 py-1.5 rounded-md font-semibold">Lapasan</span>
+          </div>
+
+          <div class="flex items-center justify-between py-2 border-b border-gray-800">
+            <span class="text-sm text-gray-300 font-medium">System Language</span>
+            <select class="bg-gray-700/80 text-white text-xs px-4 py-1.5 rounded-md">
+              <option>English</option>
+              <option>Cebuano / Bisaya</option>
+              <option>Filipino</option>
+            </select>
+          </div>
+
+          <div class="flex items-center justify-between py-2 border-b border-gray-800">
+            <span class="text-sm text-gray-300 font-medium">Multi-factor Status</span>
+            <div class="flex items-center gap-2">
+              <span id="mfa-badge" class="bg-amber-500/20 text-amber-300 text-[11px] px-2.5 py-1 rounded font-semibold">NOT CONFIGURED</span>
+              <button onclick="openModal('modal-mfa')" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3 py-1.5 rounded-md font-semibold transition">
+                Configure MFA Now
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between py-2 border-b border-gray-800">
+            <div>
+              <span class="text-sm text-gray-300 font-medium block">IP Address Logging</span>
+              <span class="text-[11px] text-gray-500">Track action origin for security audits</span>
+            </div>
+            <label class="inline-flex items-center cursor-pointer">
+              <input type="checkbox" checked class="sr-only peer">
+              <div class="w-10 h-5 bg-gray-700 rounded-full peer peer-checked:bg-emerald-500 relative after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5"></div>
+            </label>
+          </div>
+
+          <div class="flex items-center justify-between py-2 border-b border-gray-800">
+            <span class="text-sm text-gray-300 font-medium">Log History Retention</span>
+            <span class="bg-gray-700/80 text-white text-xs px-4 py-1.5 rounded-md font-semibold">1 YEAR</span>
+          </div>
+
+          <div class="flex items-center justify-between py-2 border-b border-gray-800">
+            <span class="text-sm text-gray-300 font-medium">Server Status</span>
+            <span class="bg-emerald-500 text-white text-[11px] px-3 py-1 rounded font-bold tracking-wider">ONLINE</span>
+          </div>
+
+          <div class="flex items-center justify-between pt-2">
+            <span class="text-sm text-gray-300 font-medium">API Keys & Data Backups</span>
+            <div class="flex gap-2">
+              <button onclick="toggleApiView(true)" class="bg-purple-600 hover:bg-purple-500 text-white text-xs px-3.5 py-2 rounded-lg font-semibold transition">
+                Manage API Keys
+              </button>
+              <button onclick="openModal('modal-backup')" class="bg-amber-600 hover:bg-amber-500 text-white text-xs px-3.5 py-2 rounded-lg font-semibold transition">
+                Run Backup Now
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUB-VIEW: MANAGE API KEYS (Desktop - 11) -->
+        <div id="settings-api" class="hidden bg-[#1e2638] border border-gray-800 rounded-xl p-6 max-w-3xl space-y-4">
+          <div class="flex items-center justify-between">
+            <button onclick="toggleApiView(false)" class="text-xs text-blue-400 hover:underline flex items-center gap-1.5">
+              <i class="fa-solid fa-arrow-left"></i> Back to System Settings
+            </button>
+            <button onclick="alert('New API Key generated and copied to clipboard!')" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3.5 py-2 rounded-lg font-semibold">
+              + Generate New API Key
+            </button>
+          </div>
+          <h3 class="text-base font-bold text-white">API Key Management</h3>
+          <table class="w-full text-left text-xs border border-gray-800 rounded-lg overflow-hidden">
+            <thead class="bg-gray-900 text-gray-400 uppercase">
+              <tr>
+                <th class="px-4 py-3">API Key Name</th>
+                <th class="px-4 py-3">Status</th>
+                <th class="px-4 py-3">Created On</th>
+                <th class="px-4 py-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-800 text-gray-200">
+              <tr>
+                <td class="px-4 py-3 font-medium">Resident Web Portal</td>
+                <td class="px-4 py-3"><span class="text-emerald-400 font-semibold">● Active</span></td>
+                <td class="px-4 py-3 text-gray-400">1-15-2026</td>
+                <td class="px-4 py-3 text-right"><button class="bg-gray-700 hover:bg-red-600 text-white px-2.5 py-1 rounded text-[11px]">Revoke</button></td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-medium">JavaFX Admin Client</td>
+                <td class="px-4 py-3"><span class="text-amber-400 font-semibold">● Inactive</span></td>
+                <td class="px-4 py-3 text-gray-400">10-10-2025</td>
+                <td class="px-4 py-3 text-right"><button class="bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-1 rounded text-[11px]">Activate</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ==================== MODALS (Desktop 9, 10, 12, 14) ==================== -->
+
+  <!-- MODAL: EDIT RESIDENT DETAILS (Desktop - 9) -->
+  <div id="modal-edit" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div class="bg-[#e5e7eb] text-gray-900 rounded-xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <h3 class="text-base font-bold border-b border-gray-300 pb-2">Edit Resident Details: <span id="edit-title-name" class="text-blue-700"></span></h3>
+      <input type="hidden" id="edit-index" />
+      <div>
+        <label class="block text-xs font-semibold mb-1">Resident Name:</label>
+        <input id="edit-name" type="text" class="w-full bg-[#1f2937] text-white text-xs rounded-lg px-3 py-2.5" />
+      </div>
+      <div>
+        <label class="block text-xs font-semibold mb-1">Age:</label>
+        <input id="edit-age" type="number" class="w-full bg-[#1f2937] text-white text-xs rounded-lg px-3 py-2.5" />
+      </div>
+      <div>
+        <label class="block text-xs font-semibold mb-1">Gender:</label>
+        <select id="edit-gender" class="w-full bg-[#1f2937] text-white text-xs rounded-lg px-3 py-2.5">
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold mb-1">Zone:</label>
+        <input id="edit-zone" type="text" class="w-full bg-[#1f2937] text-white text-xs rounded-lg px-3 py-2.5" />
+      </div>
+      <div>
+        <label class="block text-xs font-semibold mb-1">Civil Status:</label>
+        <select id="edit-status" class="w-full bg-[#1f2937] text-white text-xs rounded-lg px-3 py-2.5">
+          <option value="Single">Single</option>
+          <option value="Married">Married</option>
+          <option value="Separated">Separated</option>
+        </select>
+      </div>
+      <div class="flex justify-end gap-2 pt-3">
+        <button onclick="closeModal('modal-edit')" class="bg-gray-500 hover:bg-gray-600 text-white text-xs font-semibold px-4 py-2 rounded-lg">Cancel</button>
+        <button onclick="confirmEditResident()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-4 py-2 rounded-lg">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CONFIRM DELETE RESIDENT RECORD (Desktop - 10) -->
+  <div id="modal-delete" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div class="bg-[#e5e7eb] text-gray-900 rounded-xl max-w-md w-full p-6 shadow-2xl space-y-4 text-center">
+      <div class="w-11 h-11 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto text-xl">
+        <i class="fa-solid fa-trash-can"></i>
+      </div>
+      <h3 class="text-base font-bold text-red-700">CONFIRM DELETE RESIDENT RECORD</h3>
+      <p class="text-xs text-gray-700">Are you sure you want to permanently delete the resident record for: <strong id="delete-target-name"></strong>?</p>
+      <p class="text-xs font-semibold text-red-600">All associated data will be removed. This action cannot be undone.</p>
+      <input type="hidden" id="delete-index" />
+      <div class="flex justify-center gap-3 pt-2">
+        <button onclick="closeModal('modal-delete')" class="bg-gray-500 hover:bg-gray-600 text-white text-xs font-semibold px-5 py-2 rounded-lg">Cancel</button>
+        <button onclick="confirmDeleteResident()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-5 py-2 rounded-lg">Confirm Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: SYSTEM DATA BACKUP COMPLETED (Desktop - 12) -->
+  <div id="modal-backup" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div class="bg-[#1e2638] border border-gray-700 text-white rounded-xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <h3 class="text-sm font-bold text-center tracking-wide uppercase">System Data Backup Completed</h3>
+      <div class="w-full bg-gray-700 rounded-full h-5 overflow-hidden">
+        <div class="bg-emerald-500 h-5 text-[11px] font-bold flex items-center justify-center text-white w-full">100%</div>
+      </div>
+      <div class="bg-[#111827] rounded-lg p-3.5 text-xs font-mono space-y-1.5 border border-gray-800">
+        <p>Resident Records: [ 4,521 of 4,521 ] <span class="text-emerald-400">[ COMPLETED ]</span></p>
+        <p>Transaction Logs: [ 890 of 890 ] <span class="text-emerald-400">[ COMPLETED ]</span></p>
+        <p>System Configuration: <span class="text-emerald-400">[ COMPLETED ]</span></p>
+        <p class="text-gray-400 pt-1">Backup Destination:<br><span class="text-sky-400">[C:\Users\Admin\Documents\E-Baryo\Backups]</span></p>
+      </div>
+      <div class="text-center pt-1">
+        <button onclick="closeModal('modal-backup')" class="bg-gray-600 hover:bg-gray-500 text-white text-xs font-semibold px-8 py-2 rounded-lg">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: MFA CONFIGURATION AUTHENTICATOR APP (Desktop - 14) -->
+  <div id="modal-mfa" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div class="bg-[#1e2638] border border-gray-700 text-white rounded-xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <h3 class="text-sm font-bold text-center uppercase tracking-wide">MFA Configuration: Authenticator App</h3>
+      <p class="text-[11px] text-gray-300"><strong>STEP 1:</strong> Scan the QR code below with your preferred Authenticator App (Google Authenticator, Microsoft Authenticator):</p>
+      <div class="bg-white p-3 rounded-lg w-32 h-32 mx-auto flex items-center justify-center text-gray-900">
+        <i class="fa-solid fa-qrcode text-7xl"></i>
+      </div>
+      <p class="text-[11px] text-gray-300"><strong>STEP 2:</strong> Alternatively, enter this manual setup key into your app:</p>
+      <div class="bg-[#111827] border border-gray-700 rounded-lg px-3 py-2 text-xs font-mono flex justify-between items-center text-sky-400">
+        <span>[ sedohyret3sdurdfs ]</span>
+        <button onclick="alert('Setup key copied!')" class="text-gray-400 hover:text-white"><i class="fa-regular fa-copy"></i></button>
+      </div>
+      <p class="text-[11px] text-gray-300"><strong>STEP 3:</strong> Once your app is set up, enter the 6-digit code from your app below:</p>
+      <input type="text" maxlength="6" placeholder="000000" class="w-full bg-[#111827] border border-gray-700 rounded-lg px-3 py-2 text-center tracking-widest font-mono text-sm text-white" />
+      <div class="flex justify-center gap-3 pt-2">
+        <button onclick="enableMfa()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-4 py-2 rounded-lg">VERIFY & ENABLE</button>
+        <button onclick="closeModal('modal-mfa')" class="bg-gray-600 hover:bg-gray-500 text-white text-xs font-semibold px-4 py-2 rounded-lg">CANCEL</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+  <script>
+    // Initial Sample Data matching Figma screenshots
+    let residents = [
+      { name: "Ediljay Llandres", age: 25, gender: "Male", zone: "Zone 4, Lapasan", status: "Married" },
+      { name: "Abigail Alabastro", age: 21, gender: "Female", zone: "Zone 3, Lapasan", status: "Single" },
+      { name: "Athea Salinas", age: 21, gender: "Female", zone: "Zone 4, Lapasan", status: "Single" },
+      { name: "Joshua Gerong", age: 21, gender: "Male", zone: "Zone 2, Lapasan", status: "Single" },
+      { name: "Judah Galindo", age: 20, gender: "Male", zone: "Zone 1, Lapasan", status: "Single" },
+      { name: "Johanna Namocot", age: 20, gender: "Female", zone: "Zone 3, Lapasan", status: "Single" }
+    ];
+
+    let clearances = [
+      { name: "Judah Ray Galindo", type: "Barangay Clearance", zone: "Zone 4", date: "11/16/2026 • 8:30 AM", status: "Pending" },
+      { name: "Joshua Gabriel Gerong", type: "Barangay Clearance", zone: "Zone 2", date: "11/16/2026 • 9:15 AM", status: "Approved" },
+      { name: "Athea Salinas", type: "Certificate of Indigency", zone: "Zone 4", date: "11/16/2026 • 10:00 AM", status: "Pending" },
+      { name: "Ediljay Llandres", type: "Barangay Clearance", zone: "Zone 4", date: "11/15/2026 • 2:20 PM", status: "Approved" },
+      { name: "Abigail Alabastro", type: "Certificate of Residency", zone: "Zone 3", date: "11/15/2026 • 3:45 PM", status: "Approved" },
+      { name: "Johanna Namocot", type: "Barangay Clearance", zone: "Zone 3", date: "11/14/2026 • 11:05 AM", status: "Approved" }
+    ];
+
+    // Auth View Switcher
+    function switchAuthView(viewId) {
+      ['auth-login', 'auth-signup', 'auth-forgot', 'auth-email-sent', 'auth-saved'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+      });
+      document.getElementById(viewId).classList.remove('hidden');
+    }
+
+    function enterApp() {
+      document.getElementById('auth-wrapper').classList.add('hidden');
+      document.getElementById('app-wrapper').classList.remove('hidden');
+      initCharts();
+      renderResidents();
+      renderClearances();
+    }
+
+    function logout() {
+      document.getElementById('app-wrapper').classList.add('hidden');
+      document.getElementById('auth-wrapper').classList.remove('hidden');
+      switchAuthView('auth-login');
+    }
+
+    // Sidebar Navigation
+    function navigate(section) {
+      ['dashboard', 'residents', 'clearances', 'logs', 'settings'].forEach(s => {
+        document.getElementById('view-' + s).classList.add('hidden');
+        document.getElementById('nav-' + s).classList.remove('active');
+      });
+      document.getElementById('view-' + section).classList.remove('hidden');
+      document.getElementById('nav-' + section).classList.add('active');
+    }
+
+    // Resident CRUD
+    function renderResidents() {
+      const query = document.getElementById('resident-search').value.toLowerCase();
+      const tbody = document.getElementById('resident-tbody');
+      tbody.innerHTML = '';
+
+      residents.forEach((r, index) => {
+        if (!r.name.toLowerCase().includes(query) && !r.zone.toLowerCase().includes(query)) return;
+        tbody.innerHTML += `
+          <tr class="hover:bg-gray-800/40 transition">
+            <td class="px-5 py-3.5 font-medium text-white">${r.name}</td>
+            <td class="px-5 py-3.5">${r.age}</td>
+            <td class="px-5 py-3.5">${r.gender}</td>
+            <td class="px-5 py-3.5">${r.zone}</td>
+            <td class="px-5 py-3.5">${r.status}</td>
+            <td class="px-5 py-3.5 text-right space-x-1.5">
+              <button onclick="openEditModal(${index})" class="bg-sky-600 hover:bg-sky-500 text-white px-2.5 py-1 rounded text-[11px] font-medium">
+                <i class="fa-solid fa-pen"></i> Edit
+              </button>
+              <button onclick="openDeleteModal(${index})" class="bg-red-600 hover:bg-red-500 text-white px-2.5 py-1 rounded text-[11px] font-medium">
+                <i class="fa-solid fa-trash"></i> Delete
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function toggleAddResidentForm(show) {
+      document.getElementById('resident-table-container').classList.toggle('hidden', show);
+      document.getElementById('resident-add-form').classList.toggle('hidden', !show);
+    }
+
+    function saveNewResident() {
+      const fname = document.getElementById('new-fname').value.trim();
+      const lname = document.getElementById('new-lname').value.trim();
+      const age = document.getElementById('new-age').value || 22;
+      const gender = document.getElementById('new-gender').value;
+      const zone = document.getElementById('new-zone').value;
+      const status = document.getElementById('new-status').value;
+
+      if (!fname || !lname) {
+        alert("Please enter at least First Name and Last Name.");
+        return;
+      }
+
+      residents.unshift({ name: `${fname} ${lname}`, age, gender, zone, status });
+      renderResidents();
+      toggleAddResidentForm(false);
+    }
+
+    function openEditModal(index) {
+      const r = residents[index];
+      document.getElementById('edit-index').value = index;
+      document.getElementById('edit-title-name').innerText = r.name;
+      document.getElementById('edit-name').value = r.name;
+      document.getElementById('edit-age').value = r.age;
+      document.getElementById('edit-gender').value = r.gender;
+      document.getElementById('edit-zone').value = r.zone;
+      document.getElementById('edit-status').value = r.status;
+      openModal('modal-edit');
+    }
+
+    function confirmEditResident() {
+      const idx = document.getElementById('edit-index').value;
+      residents[idx] = {
+        name: document.getElementById('edit-name').value,
+        age: document.getElementById('edit-age').value,
+        gender: document.getElementById('edit-gender').value,
+        zone: document.getElementById('edit-zone').value,
+        status: document.getElementById('edit-status').value
+      };
+      closeModal('modal-edit');
+      renderResidents();
+    }
+
+    function openDeleteModal(index) {
+      const r = residents[index];
+      document.getElementById('delete-index').value = index;
+      document.getElementById('delete-target-name').innerText = `${r.name} (Age: ${r.age})`;
+      openModal('modal-delete');
+    }
+
+    function confirmDeleteResident() {
+      const idx = document.getElementById('delete-index').value;
+      residents.splice(idx, 1);
+      closeModal('modal-delete');
+      renderResidents();
+    }
+
+    // Clearances Render
+    function renderClearances() {
+      const tbody = document.getElementById('clearance-tbody');
+      tbody.innerHTML = clearances.map((c, idx) => `
+        <tr class="hover:bg-gray-800/40 transition">
+          <td class="px-5 py-3.5 font-medium text-white">${c.name}</td>
+          <td class="px-5 py-3.5">${c.type}</td>
+          <td class="px-5 py-3.5">${c.zone}</td>
+          <td class="px-5 py-3.5 text-gray-400">${c.date}</td>
+          <td class="px-5 py-3.5 text-right">
+            ${c.status === 'Pending'
+              ? `<button onclick="approveClearance(${idx})" class="bg-amber-500 hover:bg-emerald-500 text-gray-950 hover:text-white font-semibold px-3 py-1 rounded text-[11px] transition">Approve & Issue</button>`
+              : `<span class="bg-emerald-500/20 text-emerald-400 px-2.5 py-1 rounded text-[11px] font-semibold">✓ Issued</span>`
+            }
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function approveClearance(idx) {
+      clearances[idx].status = 'Approved';
+      renderClearances();
+    }
+
+    // Settings & Modals
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    function toggleApiView(showApi) {
+      document.getElementById('settings-main').classList.toggle('hidden', showApi);
+      document.getElementById('settings-api').classList.toggle('hidden', !showApi);
+    }
+
+    function enableMfa() {
+      const badge = document.getElementById('mfa-badge');
+      badge.innerText = 'ACTIVE (2FA)';
+      badge.className = 'bg-emerald-500/20 text-emerald-400 text-[11px] px-2.5 py-1 rounded font-semibold';
+      closeModal('modal-mfa');
+    }
+
+    // Dashboard Charts (Chart.js)
+    let chartsInitialized = false;
+    function initCharts() {
+      if (chartsInitialized) return;
+      chartsInitialized = true;
+
+      new Chart(document.getElementById('zoneChart'), {
+        type: 'pie',
+        data: {
+          labels: ['Zone 1', 'Zone 2', 'Zone 3', 'Zone 4'],
+          datasets: [{
+            data: [1120, 980, 1290, 1131],
+            backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          plugins: { legend: { position: 'right', labels: { color: '#d1d5db', font: { size: 11 } } } }
+        }
+      });
+
+      new Chart(document.getElementById('requestChart'), {
+        type: 'line',
+        data: {
+          labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          datasets: [{
+            label: 'Clearance Requests',
+            data: [14, 22, 19, 31, 28, 36, 42],
+            borderColor: '#38bdf8',
+            backgroundColor: 'rgba(56, 189, 248, 0.15)',
+            fill: true,
+            tension: 0.35,
+            pointBackgroundColor: '#ffffff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { ticks: { color: '#9ca3af', font: { size: 11 } }, grid: { color: '#1f2937' } },
+            y: { ticks: { color: '#9ca3af', font: { size: 11 } }, grid: { color: '#1f2937' } }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
